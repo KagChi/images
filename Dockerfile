@@ -1,7 +1,6 @@
-# ----------------------------------
-# Environment: redis
-# Minimum Panel Version: 0.7.X
-# ----------------------------------
+# TAGS: stable
+# VARIANT: keydb
+# PLATFORMS: linux/amd64, linux/arm64/v8
 FROM    eqalpha/keydb
 
 LABEL   author="Michael Parker" maintainer="parker@pterodactyl.io"
