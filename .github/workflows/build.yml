@@ -1,0 +1,88 @@
+name: Build Dockerfile and publish it to registry
+
+on:
+  workflow_call:
+    inputs:
+      root_directory:
+        description: Root directory of working (Passed to docker build context path)
+        required: true
+        type: string
+      work_directory:
+        description: Working directory of Dockerfile
+        required: true
+        type: string
+      image_name:
+        description: Docker image name
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - name: Set up QEMU for Docker Buildx
+        uses: docker/setup-qemu-action@8b122486cedac8393e77aa9734c3528886e4a1a8 # tag=v2.0.0
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@dc7b9719a96d48369863986a06765841d7ea23f6 # tag=v2.0.0
+
+      - name: Set up Node.js for extracting recipe from Dockerfile
+        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd # tag=v3.3.0
+
+      - name: Set WORKDIR
+        run: |
+          echo "WORKDIR=${{ inputs.work_directory }}" >> $GITHUB_ENV
+          echo "ROOTDIR=${{ inputs.root_directory }}" >> $GITHUB_ENV
+
+      - name: Extract recipe from Dockerfile
+        id: recipe
+        run: |
+          TAGS=`npm exec -sy @hazmi35/extract-docker-baseimg-recipe $WORKDIR/Dockerfile tags`
+          PLATFORMS=`npm exec -sy @hazmi35/extract-docker-baseimg-recipe $WORKDIR/Dockerfile platforms`
+          VARIANT=`npm exec -sy @hazmi35/extract-docker-baseimg-recipe $WORKDIR/Dockerfile variant`
+          echo TAGS: $TAGS
+          echo PLATFORMS: $PLATFORMS
+          echo VARIANT: $VARIANT
+          echo "::set-output name=tags::${TAGS//$', '/'%0A'}"
+          echo "::set-output name=platforms::${PLATFORMS//$', '/'%0A'}"
+          echo "::set-output name=variant::$VARIANT"
+      - name: Generate Docker image metadata
+        uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a # tag=v4.0.1
+        id: meta
+        with:
+          images: |
+            ghcr.io/kagchi/${{ inputs.image_name }}
+          tags: |
+            ${{ steps.recipe.outputs.tags }}
+
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # tag=v2.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push the Docker image from the specified Dockerfile
+        id: docker_build
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3.0.0
+        with:
+          context: ${{ env.ROOTDIR }}
+          file: ${{ env.WORKDIR }}/Dockerfile
+          platforms: |
+            ${{ steps.recipe.outputs.platforms }}
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
