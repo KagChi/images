@@ -10,6 +10,6 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      root_directory: /
-      work_directory: /
+      root_directory: ./
+      work_directory: ./
       image_name: keydb
