@@ -1,5 +1,5 @@
 # TAGS: stable
-# VARIANT: keydb
+# VARIANT: golang
 # PLATFORMS: linux/amd64, linux/arm64/v8
 FROM    golang:1.20
 
