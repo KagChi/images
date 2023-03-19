@@ -1,9 +1,9 @@
-name: Build & Push keydb to Image Registry
+name: Build & Push golang to Image Registry
 
 on:
   push:
     branches:
-      - keydb
+      - golang
   workflow_dispatch:
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
     with:
       root_directory: ./
       work_directory: ./
-      image_name: keydb
+      image_name: golang

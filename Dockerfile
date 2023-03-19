@@ -1,7 +1,7 @@
 # TAGS: stable
 # VARIANT: keydb
 # PLATFORMS: linux/amd64, linux/arm64/v8
-FROM    eqalpha/keydb
+FROM    golang:1.20
 
 LABEL   author="Michael Parker" maintainer="parker@pterodactyl.io"
 
