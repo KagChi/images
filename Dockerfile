@@ -41,8 +41,8 @@ RUN cp ../.env.docker /var/www/html/panel/.env
 RUN composer install --no-dev --optimize-autoloader
 
 # Set file permissions
-RUN chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+RUN chmod -R 755 /var/www/html/panel/storage \
+    && chmod -R 755 /var/www/html/panel/bootstrap/cache
 
 #echo "* * * * * /usr/local/bin/php /build/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root
 
