@@ -11,7 +11,9 @@ RUN git clone https://github.com/pelican-dev/panel
 
 WORKDIR /build/panel
 
-RUN yarn install --frozen-lockfile && yarn run build:production
+RUN corepack enable && corepack prepare pnpm@latest
+
+RUN pnpm install --frozen-lockfile && pnpm build:production
 
 FROM php:8.3-fpm-alpine
 
