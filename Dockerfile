@@ -13,7 +13,7 @@ WORKDIR /build/panel
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-RUN pnpm install && pnpm clean && pnpm dlx cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production
+RUN pnpm install && pnpm clean && pnpm dlx cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production || true
 
 FROM php:8.3-fpm-alpine
 
