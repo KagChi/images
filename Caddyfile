@@ -3,7 +3,7 @@
 }
 
 {$APP_URL} {
-    root * /var/www/html/public
+    root * /var/www/html/panel/public
     encode gzip
 
     php_fastcgi 127.0.0.1:9000

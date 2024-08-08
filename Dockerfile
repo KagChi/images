@@ -9,7 +9,7 @@ RUN apk update && apk add --no-cache \
 
 RUN git clone https://github.com/pelican-dev/panel
 
-COPY ./panel ./
+WORKDIR /build/panel
 
 RUN yarn install --frozen-lockfile && yarn run build:production
 
@@ -26,17 +26,17 @@ RUN apk update && apk add --no-cache \
     caddy ca-certificates supervisor \
     && docker-php-ext-install bcmath gd intl zip opcache pcntl posix
 
-RUN git clone https://github.com/pelican-dev/panel
-
 # Copy the Caddyfile to the container
 COPY ./Caddyfile /etc/caddy/Caddyfile
 
-# Copy the application code to the container
-COPY ./panel .
+RUN git clone https://github.com/pelican-dev/panel /var/www/html/panel
+
+# Set working directory
+WORKDIR /var/www/html/panel
 
 COPY --from=yarn /build/public/assets ./public/assets
 
-RUN cp .env.docker .env
+RUN cp ../.env.docker /var/www/html/panel/.env
 
 RUN composer install --no-dev --optimize-autoloader
 
@@ -58,4 +58,3 @@ VOLUME /pelican-data
 CMD ["sh", "-c", "php-fpm"]
 
 ENTRYPOINT [ "/bin/ash", ".github/docker/entrypoint.sh" ]
-# CMD [ "supervisord", "-n", "-c", "/etc/supervisord.conf" ]
