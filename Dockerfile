@@ -4,6 +4,11 @@ FROM node:20-alpine AS yarn
 
 WORKDIR /build
 
+RUN apk update && apk add --no-cache \
+    git curl
+
+RUN git clone https://github.com/pelican-dev/panel && cd panel
+
 COPY . ./
 
 RUN yarn install --frozen-lockfile && yarn run build:production
