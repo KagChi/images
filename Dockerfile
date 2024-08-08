@@ -36,7 +36,8 @@ WORKDIR /var/www/html/panel
 
 COPY --from=yarn /build/panel/public/assets ./public/assets
 
-RUN cp ../.env.docker /var/www/html/panel/.env
+RUN echo "APP_KEY=" > .env \
+    && echo "DB_DATABASE=docker/database.sqlite" >> .env
 
 RUN composer install --no-dev --optimize-autoloader
 
