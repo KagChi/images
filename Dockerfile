@@ -9,6 +9,8 @@ RUN apk update && apk add --no-cache \
 
 RUN git clone https://github.com/pelican-dev/panel && cd panel
 
+RUN ls
+
 COPY . ./
 
 RUN yarn install --frozen-lockfile && yarn run build:production
