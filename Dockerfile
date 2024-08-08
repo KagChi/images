@@ -34,7 +34,7 @@ RUN git clone https://github.com/pelican-dev/panel /var/www/html/panel
 # Set working directory
 WORKDIR /var/www/html/panel
 
-COPY --from=yarn /build/public/assets ./public/assets
+COPY --from=yarn /build/panel/public/assets ./public/assets
 
 RUN cp ../.env.docker /var/www/html/panel/.env
 
