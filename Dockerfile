@@ -11,7 +11,7 @@ RUN git clone https://github.com/pelican-dev/panel
 
 WORKDIR /build/panel
 
-RUN corepack enable && corepack prepare pnpm@latest
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 RUN pnpm install && pnpm build:production
 
