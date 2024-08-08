@@ -13,7 +13,7 @@ WORKDIR /build/panel
 
 RUN corepack enable && corepack prepare pnpm@latest
 
-RUN pnpm install --frozen-lockfile && pnpm build:production
+RUN pnpm install && pnpm build:production
 
 FROM php:8.3-fpm-alpine
 
