@@ -9,9 +9,7 @@ RUN apk update && apk add --no-cache \
 
 RUN git clone https://github.com/pelican-dev/panel && cd panel
 
-RUN ls
-
-COPY . ./
+COPY ./panel ./
 
 RUN yarn install --frozen-lockfile && yarn run build:production
 
@@ -28,13 +26,13 @@ RUN apk update && apk add --no-cache \
     caddy ca-certificates supervisor \
     && docker-php-ext-install bcmath gd intl zip opcache pcntl posix
 
-RUN git clone https://github.com/pelican-dev/panel && cd panel
+RUN git clone https://github.com/pelican-dev/panel
 
 # Copy the Caddyfile to the container
-COPY ../Caddyfile /etc/caddy/Caddyfile
+COPY ./Caddyfile /etc/caddy/Caddyfile
 
 # Copy the application code to the container
-COPY . .
+COPY ./panel .
 
 COPY --from=yarn /build/public/assets ./public/assets
 
