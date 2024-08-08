@@ -7,7 +7,7 @@ WORKDIR /build
 RUN apk update && apk add --no-cache \
     git curl
 
-RUN git clone https://github.com/pelican-dev/panel && cd panel
+RUN git clone https://github.com/pelican-dev/panel
 
 COPY ./panel ./
 
