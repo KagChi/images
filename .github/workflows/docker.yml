@@ -10,5 +10,5 @@ jobs:
   docker:
     uses: nezuchan/workflows/.github/workflows/docker-build.yml@main
     with:
-      TARGET_IMAGE_NAME: "pelican-panel"
+      TARGET_IMAGE_NAME: "kagchi/pelican-panel"
     secrets: inherit
